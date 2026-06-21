@@ -18,7 +18,10 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [
+        // 1. 配置 elementPlus 採用 sass 樣式配色系統
+        ElementPlusResolver({ importStyle: "sass" })
+      ],
     })
   ],
   resolve: {
@@ -27,4 +30,14 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        // 自動導入定制化樣式文件進行樣式覆蓋
+        additionalData: `
+          @use "@/styles/element/index.scss" as *;
+        `,
+      }
+    }
+  }
 })
