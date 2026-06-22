@@ -24,6 +24,15 @@ export default defineConfig({
       ],
     })
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://pcapi-xiaotuxian-front-devtest.itheima.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  },
   resolve: {
     // 實際的路徑轉換 @ -> src
     alias: {
