@@ -3,7 +3,8 @@
 </script>
 
 <template>
-  <el-button type="primary">Primary</el-button>
+  <!-- 一級路由出口 -->
+  <RouterView/>
 </template>
 
 <style scoped>
