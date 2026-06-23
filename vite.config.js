@@ -45,6 +45,7 @@ export default defineConfig({
         // 自動導入定制化樣式文件進行樣式覆蓋
         additionalData: `
           @use "@/styles/element/index.scss" as *;
+          @use "@/styles/var.scss" as *;
         `,
       }
     }
