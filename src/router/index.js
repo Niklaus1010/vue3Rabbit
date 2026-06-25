@@ -12,7 +12,7 @@ const router = createRouter({
       component: () => import('@/views/Layout/index.vue'),
       children: [
         {
-          path: '/home', // 默認二級路由
+          path: '', // 默認二級路由 有點怪
           component: () => import('@/views/Home/index.vue')
         },
         {

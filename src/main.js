@@ -1,5 +1,3 @@
-import './assets/main.css'
-
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -8,7 +6,6 @@ import router from './router'
 
 // 引入初始化樣式文件
 import '@/styles/common.scss'
-
 
 const app = createApp(App)
 
