@@ -14,6 +14,7 @@ httpInstance.interceptors.request.use(config => {
 }, e => Promise.reject(e))
 
 // axios 響應攔截器
+// 先解成 res.data，後面要拿數據時，就不需要 res.data 了，直接 res 即可
 httpInstance.interceptors.response.use(res => res.data, e => {
   return Promise.reject(e)
 })
