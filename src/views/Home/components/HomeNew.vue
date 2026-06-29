@@ -9,6 +9,8 @@ const newList = ref([])
 // 取的數據
 const getNewList = async () => {
   const res = await findNewAPI()
+  console.log(res)
+  
   newList.value = res.result
 }
 
@@ -43,7 +45,6 @@ onMounted(() => getNewList())
   li {
     width: 306px;
     height: 406px;
-
     background: #f0f9f4;
     transition: all .5s;
 

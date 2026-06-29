@@ -1,7 +1,5 @@
 import httpInstance from "@/utils/http"
 
-
-
 // 獲取 banner 
 export function getBannerAPI () {
   return httpInstance({
@@ -17,5 +15,16 @@ export function getBannerAPI () {
 export const findNewAPI = () => {
   return httpInstance({
     url: '/home/new'
+  })
+}
+
+/**
+ * @description: 獲取 人氣推薦
+ * @param {*}
+ * @returns {*}
+ */ 
+export const findHotAPI = () => {
+  return httpInstance({
+    url: '/home/hot'
   })
 }
