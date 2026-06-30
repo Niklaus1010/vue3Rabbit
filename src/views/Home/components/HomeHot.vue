@@ -19,7 +19,7 @@ onMounted(() => getHotList())
 </script>
 
 <template>
-  <HomePanel title="新鮮好物" sub-title="新鮮出爐 品質靠譜">
+  <HomePanel title="人氣推薦" sub-title="人氣爆棚 不容錯過">
     <!-- 插槽主體內容模版 -->
     <ul class="goods-list">
       <li v-for="item in hotList" :key="item.id">
