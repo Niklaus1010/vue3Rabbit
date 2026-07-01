@@ -1,9 +1,15 @@
 import httpInstance from "@/utils/http"
 
 // 獲取 banner 
-export function getBannerAPI () {
+// params = {} ，是為了避免寫 params，然後呼叫時沒傳參數，導致解構錯誤
+export const getBannerAPI = (params = {}) => {
+  // 默認為1 商品為2
+  const { distributionSite = '1' } = params
   return httpInstance({
-    url: '/home/banner'
+    url: '/home/banner',
+    params: {
+      distributionSite
+    }
   })
 }
 

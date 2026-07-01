@@ -1,9 +1,10 @@
 <script setup>
 import { getCategoryAPI } from '@/apis/category'
+import { getBannerAPI } from '@/apis/home'
 import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-// 取得數據
+// 取得麵包屑導航數據
 const categoryData = ref({}) // 接口要求對象
 const route = useRoute()
 const getCategory = async () => {
@@ -19,6 +20,19 @@ onMounted(() => getCategory())
 watch(() => route.params.id, () => {
   getCategory()
 })
+
+// 取得輪播圖
+// 聲明輪播圖列表
+// 後端有偷懶 傳1 和 傳2 的圖都相同可以優化
+const bannerList = ref([])
+
+// 獲取 banner 數據的方法
+const getBanner = async () => {
+  const res = await getBannerAPI({ distributionSite: '2' })
+  bannerList.value = res.result
+}
+
+onMounted(() => getBanner())
 </script>
 
 <template>
@@ -30,6 +44,14 @@ watch(() => route.params.id, () => {
           <el-breadcrumb-item :to="{ path: '/' }">首頁</el-breadcrumb-item>
           <el-breadcrumb-item>{{ categoryData.name }}</el-breadcrumb-item>
         </el-breadcrumb>
+      </div>
+      <!-- 輪播圖 -->
+      <div class="home-banner">
+        <el-carousel height="500px">
+          <el-carousel-item v-for="item in bannerList" :key="item.id">
+            <img :src="item.imgUrl" alt="">
+          </el-carousel-item>
+        </el-carousel>
       </div>
     </div>
   </div>
@@ -112,6 +134,18 @@ watch(() => route.params.id, () => {
 
   .bread-container {
     padding: 25px 0;
+  }
+}
+
+.home-banner {
+  width: 1240px;
+  height: 500px;
+  // margin: 0 auto; common.js 有在 main.js 中導入，所以app.vue 應該有吃到
+  z-index: 98;
+
+  img {
+    width: 100%;
+    height: 500px;
   }
 }
 </style>
