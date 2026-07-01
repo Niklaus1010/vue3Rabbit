@@ -16,7 +16,7 @@ const categoryStore = useCategoryStore()
         </li>
         <li class="home" v-for="item in categoryStore.categoryList" :key="item.id">
           <!-- 用 :to 動態渲染地址 -->
-          <RouterLink :to="`/category/${item.id}`">{{ item.name }}</RouterLink>
+          <RouterLink active-class="active" :to="`/category/${item.id}`">{{ item.name }}</RouterLink>
         </li>
       </ul>
       <div class="search">
@@ -74,7 +74,8 @@ const categoryStore = useCategoryStore()
           border-bottom: 1px solid $xtxColor;
         }
       }
-  
+      
+      // 導航高亮
       .active {
         color: $xtxColor;
         border-bottom: 1px solid $xtxColor;
