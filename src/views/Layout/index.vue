@@ -18,6 +18,8 @@ onMounted(() => categoryStore.getCategory())
     <LayoutFixed></LayoutFixed>
     <LayoutNav></LayoutNav>
     <LayoutHeader></LayoutHeader>
+    <!-- 添加key，破壞複用機制，強制銷毀重建，雖可行但畫面會頻閃很醜-->
+    <!-- <RouterView :key="$route.fullPath"></RouterView> -->
     <RouterView></RouterView>
     <LayoutFooter></LayoutFooter>
 </template>

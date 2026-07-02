@@ -9,8 +9,6 @@ const newList = ref([])
 // 取的數據
 const getNewList = async () => {
   const res = await findNewAPI()
-  console.log(res)
-  
   newList.value = res.result
 }
 

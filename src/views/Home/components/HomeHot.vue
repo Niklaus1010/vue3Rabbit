@@ -9,8 +9,6 @@ const hotList = ref([])
 // 取的數據
 const getHotList = async () => {
   const res = await findHotAPI()
-  console.log(res)
-  
   hotList.value = res.result
 }
 
