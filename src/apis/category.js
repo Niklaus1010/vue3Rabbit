@@ -24,3 +24,20 @@ export const getCategoryFilterAPI = (id) => {
   })
 }
 
+/**
+ * @description: 獲取導航數據
+ * @data { 
+    categoryId: 1005000 ,
+    page: 1,
+    pageSize: 20,
+    sortField: 'publishTime' | 'orderNum' | 'evaluateNum'
+  } 
+ * @return {*}
+ */
+export const getSubCategoryAPI = (data) => {
+  return httpInstance({
+    url:'/category/goods/temporary',
+    method:'POST', // 用 post 是因為有很多參數要傳
+    data
+  })
+}
