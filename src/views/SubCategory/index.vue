@@ -31,7 +31,28 @@ const getGoodList = async () => {
 
 onMounted(() => getGoodList())
 
+// tab 欄切換
+const tabChange = () => {
+  // console.log('tab切換了', reqData.value.sortField)
+  // 重置頁面為1
+  reqData.value.page = 1
+  getGoodList()
+  
+}
 
+// 載入更多
+const disabled = ref(false)
+const load = async () => {
+  console.log('載入更多數據')
+  // 載入下一頁的數據
+  reqData.value.page++
+  const res = await getSubCategoryAPI(reqData.value)
+  goodList.value = [...goodList.value, ...res.result.items] // 不確定用push行不行
+  // 載入完畢 停止監聽，有bug 如果重新往上在往下會發起多次請求
+  if (res.result.items === 0) {
+    disabled.value = true
+  }
+}
 </script>
 
 <template>
@@ -46,12 +67,12 @@ onMounted(() => getGoodList())
       </el-breadcrumb>
     </div>
     <div class="sub-container">
-      <el-tabs>
+      <el-tabs v-model="reqData.sortField" @tab-change="tabChange">
         <el-tab-pane label="最新商品" name="publishTime"></el-tab-pane>
         <el-tab-pane label="最高人氣" name="orderNum"></el-tab-pane>
         <el-tab-pane label="評論最多" name="evaluateNum"></el-tab-pane>
       </el-tabs>
-      <div class="body">
+      <div class="body" v-infinite-scroll="load" :infinite-scroll-disabled="disabled">
         <!-- 商品列表-->
         <GoodsItem v-for="goods in goodList" :goods="goods" :key="goods.id"></GoodsItem>
       </div>
