@@ -13,7 +13,7 @@
           <dd><i class="iconfont icon-question"></i> 問題反饋</dd>
         </dl>
         <dl>
-          <dt>關注我們</dt>
+          <dt>追蹤我們</dt>
           <dd><i class="iconfont icon-weixin"></i> 公眾號</dd>
           <dd><i class="iconfont icon-weibo"></i> 微博</dd>
         </dl>
@@ -22,7 +22,7 @@
           <dd class="qrcode"><img src="@/assets/images/qrcode.jpg" /></dd>
           <dd class="download">
             <span>掃描QRCode</span>
-            <span>立馬下載APP</span>
+            <span>立即下載APP</span>
             <a href="javascript:;">下載頁面</a>
           </dd>
         </dl>
