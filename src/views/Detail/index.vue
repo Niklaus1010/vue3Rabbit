@@ -1,4 +1,5 @@
 <script setup>
+import DetailHot from './components/DetailHot.vue'
 import { getDetail } from '@/apis/detail'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -116,6 +117,7 @@ onMounted(() => getGoods())
                   <ul class="attrs">
                     <li v-for="item in goods.details.properties" :key="item.value">
                       <span class="dt">{{ item.name }}</span>
+                      <!-- 有些值可以不用拿 -->
                       <span class="dd">{{ item.value }}</span>
                     </li>
                   </ul>
@@ -126,7 +128,10 @@ onMounted(() => getGoods())
             </div>
             <!-- 24熱榜+專題推薦 -->
             <div class="goods-aside">
-
+              <!-- 24小時 -->
+              <DetailHot></DetailHot>
+              <!-- 周榜 -->
+              <DetailHot></DetailHot>
             </div>
           </div>
         </div>
