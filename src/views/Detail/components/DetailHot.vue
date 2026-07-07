@@ -5,14 +5,14 @@ import { getHotGoodsAPI } from '@/apis/detail'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-// 設計props參數 適配不同的title和數據
+// 設計props參數 配對不同的title和數據
 const props = defineProps({
   hotType: {
     type: Number
   }
 })
 
-// 適配 title 1- 24小時熱榜 2- 周熱榜
+// 配對 title 1- 24小時熱榜 2- 周熱榜
 const TYPEMAP = {
   1: '24小時熱榜',
   2: '周熱榜'
