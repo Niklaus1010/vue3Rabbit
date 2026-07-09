@@ -44,7 +44,7 @@ onMounted(() => getGoods())
           <div class="goods-info">
             <div class="media">
               <!-- 圖片預覽區 -->
-              <ImageView></ImageView>
+              <ImageView :image-list="goods.mainPictures"></ImageView>
               <!-- 統計數量 -->
               <ul class="goods-sales">
                 <li>
