@@ -1,7 +1,5 @@
 <script setup>
 import DetailHot from './components/DetailHot.vue'
-import ImageView from '@/components/ImageView/index.vue'
-import XtxSku from '@/components/XtxSku/index.vue' 
 import { getDetail } from '@/apis/detail'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -44,13 +42,13 @@ const skuChange = (sku) => {
           <el-breadcrumb-item>抓絨保暖，毛毛蟲子兒童運動鞋</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
-      <!-- 商品信息 -->
+      <!-- 商品資訊 -->
       <div class="info-container">
         <div>
           <div class="goods-info">
             <div class="media">
               <!-- 圖片預覽區 -->
-              <ImageView :image-list="goods.mainPictures"></ImageView>
+              <XtxImageView :image-list="goods.mainPictures"></XtxImageView>
               <!-- 統計數量 -->
               <ul class="goods-sales">
                 <li>
@@ -69,7 +67,7 @@ const skuChange = (sku) => {
                   <p><i class="iconfont icon-favorite-filling"></i>收藏商品</p>
                 </li>
                 <li>
-                  <p>品牌信息</p>
+                  <p>品牌資訊</p>
                   <!-- 後端沒給數據 -->
                   <p>{{ goods.brand?.name || '無' }}</p>
                   <p><i class="iconfont icon-dynamic-filling"></i>品牌主頁</p>
