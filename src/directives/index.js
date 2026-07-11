@@ -7,12 +7,12 @@ export const lazyPlugin = {
     mounted (el, binding) {
       // el: 指令綁定的元素，這裡綁定的是 img
       // binding: binding.value 指令等於號後面綁定的表達式的值 圖片 url
-      console.log(el, binding) 
+      // console.log(el, binding) 
       // 監聽視口元素 target -> el
       const { stop } = useIntersectionObserver(
         el, 
         ([{ isIntersecting }]) => {
-          console.log(isIntersecting)
+          // console.log(isIntersecting)
           if (isIntersecting) {
             // 進入視口區域 可能需要做個判斷是否有圖片，否則會一直重複請求
             el.src = binding.value

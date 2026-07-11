@@ -43,7 +43,6 @@ const tabChange = () => {
 // 載入更多
 const disabled = ref(false)
 const load = async () => {
-  console.log('載入更多數據')
   // 載入下一頁的數據
   reqData.value.page++
   const res = await getSubCategoryAPI(reqData.value)
