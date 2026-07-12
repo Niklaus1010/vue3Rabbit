@@ -20,6 +20,7 @@
           <li><a href="javascript:;">會員中心</a></li>
         </template>
         <template v-else>
+          <!-- 存在疑惑 關於是否用 router-link 以及用 $router (vue2)問題，需不需要a連結跳轉 單頁面變多頁面 -->
           <li><a href="javascript:;" @click="$router.push('/login')">請先登入</a></li>
           <li><a href="javascript:;">幫助中心</a></li>
           <li><a href="javascript:;">關於我們</a></li>
