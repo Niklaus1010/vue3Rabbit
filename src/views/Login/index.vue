@@ -22,7 +22,7 @@ const rules = {
   agree: [
     {
       validator: (rule, value, callback) => {
-        console.log(value)
+        // console.log(value)
         // 自定義驗證規則
         if (value) {
           callback()
@@ -32,6 +32,18 @@ const rules = {
       }
     }
   ]
+}
+
+// 3. 取得 form 實例做統一驗證
+const formRef = ref(null)
+const doLogin = () => {
+  formRef.value.validate((valid) => {
+    console.log(valid)
+    // 以 valid 作為判斷條件，如果通過驗證才執行登入邏輯
+    if (valid) {
+      // TODO: login
+    }
+  })
 }
 </script>
 
@@ -58,6 +70,7 @@ const rules = {
         <div class="account-box">
           <div class="form">
             <el-form 
+            ref="formRef"
             :model="form"
             :rules="rules"
             label-position="right" label-width="60px"
@@ -73,7 +86,7 @@ const rules = {
                   我已同意隱私條款和服務條款
                 </el-checkbox>
               </el-form-item>
-              <el-button size="large" class="subBtn">點擊登入</el-button>
+              <el-button size="large" class="subBtn" @click="doLogin">點擊登入</el-button>
             </el-form>
           </div>
         </div>
