@@ -40,6 +40,7 @@ httpInstance.interceptors.request.use(config => {
 httpInstance.interceptors.response.use(res => {
   return deepConvert(res.data)
 }, e => {
+  ElMessage.error(e.response.data.message)
   return Promise.reject(e)
 })
 

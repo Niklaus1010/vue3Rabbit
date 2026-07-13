@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-
+import { loginAPI } from '@/apis/user'
+import { useRouter } from 'vue-router';
 
 // 表單驗證(帳號+密碼)
 // 1. 準備表單對象
@@ -36,12 +37,20 @@ const rules = {
 
 // 3. 取得 form 實例做統一驗證
 const formRef = ref(null)
+const router = useRouter()
 const doLogin = () => {
-  formRef.value.validate((valid) => {
+  const { account, password } = form.value
+  formRef.value.validate(async (valid) => {
     console.log(valid)
     // 以 valid 作為判斷條件，如果通過驗證才執行登入邏輯
     if (valid) {
       // TODO: login
+      const res = await loginAPI({ account, password })
+      // console.log(res)
+      // 1. 提示用戶
+      ElMessage.success('登入成功')
+      // 2. 跳轉首頁
+      router.replace('/') // 防止用戶往前往後重複跳轉
     }
   })
 }
