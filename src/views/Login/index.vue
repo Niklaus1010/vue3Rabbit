@@ -1,7 +1,9 @@
 <script setup>
-import { ref } from 'vue';
-import { loginAPI } from '@/apis/user'
-import { useRouter } from 'vue-router';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 // 表單驗證(帳號+密碼)
 // 1. 準備表單對象
@@ -45,7 +47,7 @@ const doLogin = () => {
     // 以 valid 作為判斷條件，如果通過驗證才執行登入邏輯
     if (valid) {
       // TODO: login
-      const res = await loginAPI({ account, password })
+      await userStore.getUserInfo({ account, password })
       // console.log(res)
       // 1. 提示用戶
       ElMessage.success('登入成功')
