@@ -1,6 +1,7 @@
 // axios 基礎封裝
 import axios from 'axios'
 import * as OpenCC from 'opencc-js'
+import { useUserStore } from '@/stores/user'
 
 // 建立簡體 -> 繁體(台灣)轉換器
 const converter = OpenCC.Converter({ from: 'cn', to: 'tw' })
@@ -32,6 +33,13 @@ const httpInstance = axios.create({
 
 // axios 請求攔截器
 httpInstance.interceptors.request.use(config => {
+  // 1. 從 pinia 取得 token 數據
+  const userStore = useUserStore()
+  // 2. 按照後端要求拼接 token 數據
+  const token = userStore.userInfo.token
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
   return config
 }, e => Promise.reject(e))
 
