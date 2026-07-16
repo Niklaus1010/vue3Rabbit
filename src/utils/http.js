@@ -2,6 +2,7 @@
 import axios from 'axios'
 import * as OpenCC from 'opencc-js'
 import { useUserStore } from '@/stores/user'
+import router from '@/router'
 
 // 建立簡體 -> 繁體(台灣)轉換器
 const converter = OpenCC.Converter({ from: 'cn', to: 'tw' })
@@ -48,7 +49,15 @@ httpInstance.interceptors.request.use(config => {
 httpInstance.interceptors.response.use(res => {
   return deepConvert(res.data)
 }, e => {
+  const userStore = useUserStore()
   ElMessage.error(e.response.data.message)
+  // 401 token 失效處理
+  // 1. 清除本地用戶資料
+  // 2. 跳轉到登入頁
+  if (e.response.status === 401) {
+    userStore.clearUserInfo()
+    router.push('/login') // 跨域所以原請求還帶有 token，所以會失敗
+  }
   return Promise.reject(e)
 })
 
