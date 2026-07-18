@@ -14,15 +14,27 @@ export const useCartStore = defineStore('cart', () => {
     const item = cartList.value.find(item => goods.skuId === item.skuId)
     if (item) {
       // 找到: 在已加入購物車的商品添加數量
-      item.count++
+      item.count++ // 有 bug 第一個添加數量是正常的 後續再添加只會新增一件
     } else {
       // 沒找到: 在購物車新增商品
       cartList.value.push(goods)
     }
   }
+
+  // 刪除購物車
+  const delCart = (skuId) => {
+    /**
+     * 思路:
+     * 1. 找到要刪除項的下標值 - splice
+     * 2. 使用數據的過濾方法 - filter
+     */
+    const index = cartList.value.findIndex((item) => skuId === item.id) 
+    cartList.value.splice(index, 1)
+  }
   return {
     cartList,
-    addCart
+    addCart,
+    delCart
   }
 }, {
   persist: true
