@@ -1,6 +1,6 @@
 // 封裝購物車模組
 import { defineStore } from "pinia"
-import { ref } from "vue"
+import { computed, ref } from "vue"
 
 export const useCartStore = defineStore('cart', () => {
   // 1. 定義 state
@@ -31,10 +31,21 @@ export const useCartStore = defineStore('cart', () => {
     const index = cartList.value.findIndex((item) => skuId === item.id) 
     cartList.value.splice(index, 1)
   }
+
+  // 計算屬性
+  // 1. 總數 所有項的 count 之和
+  const allCount = computed(() => cartList.value.reduce((prev, current) => prev + current.count, 0))
+  // 2. 總價 所有項的 count * price 之和
+  const allPrice = computed(() => cartList.value.reduce((prev, current) => prev + current.count * current.price, 0))
+  // 3. 空車，可用於模板顯示，加上去逛逛按鈕
+  const isEmptyCart = computed(() => cartList.value.length === 0) 
   return {
     cartList,
     addCart,
-    delCart
+    delCart,
+    allCount,
+    allPrice,
+    isEmptyCart
   }
 }, {
   persist: true
