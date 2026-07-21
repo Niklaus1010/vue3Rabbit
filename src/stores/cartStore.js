@@ -28,7 +28,7 @@ export const useCartStore = defineStore('cart', () => {
      * 1. 找到要刪除項的下標值 - splice
      * 2. 使用數據的過濾方法 - filter
      */
-    const index = cartList.value.findIndex((item) => skuId === item.id) 
+    const index = cartList.value.findIndex((item) => skuId === item.skuId) 
     cartList.value.splice(index, 1)
   }
 
@@ -39,6 +39,12 @@ export const useCartStore = defineStore('cart', () => {
     item.selected = selected
   }
 
+  // 全選功能
+  const allCheck = (selected) => {
+    // 把 cartList 中的每一項 selected 都設置為當前的全選框狀態
+    cartList.value.forEach(item => item.selected = selected)
+  }
+
   // 計算屬性
   // 1. 總數 所有項的 count 之和
   const allCount = computed(() => cartList.value.reduce((prev, current) => prev + current.count, 0))
@@ -46,14 +52,21 @@ export const useCartStore = defineStore('cart', () => {
   const allPrice = computed(() => cartList.value.reduce((prev, current) => prev + current.count * current.price, 0))
   // 3. 空車，可用於模板顯示，加上去逛逛按鈕
   const isEmptyCart = computed(() => cartList.value.length === 0) 
+
+  // 是否全選
+  // cartList.value.length > 0 考慮到可能會將所有商品刪除(空車)，但全選仍在的問題
+  const isAll = computed(() => cartList.value.length > 0 && cartList.value.every((item) => item.selected))
+
   return {
     cartList,
     allCount,
     allPrice,
     isEmptyCart,
+    isAll,
     addCart,
     delCart,
-    singleCheck
+    singleCheck,
+    allCheck
   }
 }, {
   persist: true

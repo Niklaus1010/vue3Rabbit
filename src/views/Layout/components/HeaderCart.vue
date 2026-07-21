@@ -31,6 +31,7 @@ const cartStore = useCartStore()
       <div class="foot">
         <div class="total">
           <p>共 {{ cartStore.allCount }} 件商品</p>
+          <!-- 理論上台灣沒在用小數點，除了金融相關 -->
           <p>&yen; {{ cartStore.allPrice.toFixed(2) }} </p>
         </div>
         <el-button size="large" type="primary" @click="$router.push('/cartlist')">去購物車結帳</el-button>

@@ -9,6 +9,11 @@ const singleCheck = (i, selected) => {
   // 而 skuId 可以從 cartStore 裡的 cartList 得到，所以把 i 傳進來
   cartStore.singleCheck(i.skuId, selected)
 } 
+
+// 全選回調
+const allCheck = (selected) => {
+  cartStore.allCheck(selected)
+}
 </script>
 
 <template>
@@ -19,7 +24,8 @@ const singleCheck = (i, selected) => {
           <thead>
             <tr>
               <th width="120">
-                <el-checkbox/>
+                <!-- 全選框 -->
+                <el-checkbox :model-value="cartStore.isAll" @change="allCheck"/>
               </th>
               <th width="400">商品信息</th>
               <th width="220">單價</th>
