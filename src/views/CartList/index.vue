@@ -1,6 +1,14 @@
 <script setup>
 import { useCartStore } from '@/stores/cartStore'
 const cartStore = useCartStore()
+
+// 單選回調
+const singleCheck = (i, selected) => {
+  console.log(i, selected)
+  // 只有 selected 的話，無法知道要修改誰的選中狀態，所以要補篩選用參數 skuId
+  // 而 skuId 可以從 cartStore 裡的 cartList 得到，所以把 i 傳進來
+  cartStore.singleCheck(i.skuId, selected)
+} 
 </script>
 
 <template>
@@ -24,7 +32,8 @@ const cartStore = useCartStore()
           <tbody>
             <tr v-for="i in cartStore.cartList" :key="i.id">
               <td>
-                <el-checkbox />
+                <!-- 單選框  singleCheck 裡的 i 是為了拿 skuId-->
+                <el-checkbox :model-value="i.selected" @change="(selected) => singleCheck(i, selected)"/>
               </td>
               <td>
                 <div class="goods">
@@ -55,7 +64,7 @@ const cartStore = useCartStore()
                 </p>
               </td>
             </tr>
-            <tr v-if="cartStore.cartList.length === 0">
+            <tr v-if="cartStore.isEmptyCart">
               <td colspan="6">
                 <div class="cart-none">
                   <el-empty description="購物車列表為空">
