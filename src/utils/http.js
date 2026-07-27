@@ -1,7 +1,7 @@
 // axios 基礎封裝
 import axios from 'axios'
 import * as OpenCC from 'opencc-js'
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/userStore'
 import router from '@/router'
 
 // 建立簡體 -> 繁體(台灣)轉換器

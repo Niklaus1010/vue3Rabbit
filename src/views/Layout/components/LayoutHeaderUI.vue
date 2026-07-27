@@ -1,6 +1,6 @@
 <script setup>
 // 使用 pinia 中的數據
-import { useCategoryStore } from '@/stores/category'
+import { useCategoryStore } from '@/stores/categoryStore'
 const categoryStore = useCategoryStore()
 </script>
 

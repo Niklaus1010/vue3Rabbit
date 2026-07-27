@@ -1,22 +1,28 @@
 // 封裝購物車模組
 import { defineStore } from "pinia"
 import { computed, ref } from "vue"
-import { useUserStore } from "./user"
-import { insertCartAPI, findNewCartListAPI } from "@/apis/cart"
+import { useUserStore } from "./userStore"
+import { insertCartAPI, findNewCartListAPI, delCartAPI } from "@/apis/cart"
 
 export const useCartStore = defineStore('cart', () => {
   const userStore = useUserStore()
   const isLogin = computed(() => userStore.userInfo.token)
   // 1. 定義 state
   const cartList = ref([])
+  
+  // 獲取最新購物車列表 action
+  const updateNewList = async() => {
+    const res = await findNewCartListAPI()
+    cartList.value = res.result
+  }
+
   // 2. 定義 action - addCart
   const addCart = async (goods) => {
     const { skuId, count } = goods
     if (isLogin.value) {
       // 登入之後的加入購物車邏輯
       await insertCartAPI({ skuId, count })
-      const res = await findNewCartListAPI()
-      cartList.value = res.result
+      updateNewList()
     } else {
       // 加入購物車操作
       // 已添加過 - count + 1
@@ -34,14 +40,21 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   // 刪除購物車
-  const delCart = (skuId) => {
-    /**
-     * 思路:
-     * 1. 找到要刪除項的下標值 - splice
-     * 2. 使用數據的過濾方法 - filter
-     */
-    const index = cartList.value.findIndex((item) => skuId === item.skuId) 
-    cartList.value.splice(index, 1)
+  const delCart = async (skuId) => {
+    if (isLogin.value) {
+      // 調用接口實現接口購物車中的刪除功能， ids 是由 skuId 所組成的一個數組
+      await delCartAPI([skuId])
+      // 刪完之後列表刷新
+      updateNewList()
+    } else {
+      /**
+       * 思路:
+       * 1. 找到要刪除項的下標值 - splice
+       * 2. 使用數據的過濾方法 - filter
+       */
+      const index = cartList.value.findIndex((item) => skuId === item.skuId) 
+      cartList.value.splice(index, 1)
+    }
   }
 
   // 單選功能
