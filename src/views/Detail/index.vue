@@ -129,7 +129,7 @@ const addCart = () => {
               <!-- sku組件 -->
               <XtxSku :goods="goods" @change="skuChange"></XtxSku>
               <!-- 數據組件 -->
-              <el-input-number min="1" v-model="count" @change="countChange" />
+              <el-input-number :min="1" v-model="count" @change="countChange" />
               <!-- 按鈕組件 -->
               <div>
                 <el-button size="large" class="btn" @click="addCart">

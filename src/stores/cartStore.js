@@ -1,23 +1,35 @@
 // 封裝購物車模組
 import { defineStore } from "pinia"
 import { computed, ref } from "vue"
+import { useUserStore } from "./user"
+import { insertCartAPI, findNewCartListAPI } from "@/apis/cart"
 
 export const useCartStore = defineStore('cart', () => {
+  const userStore = useUserStore()
+  const isLogin = computed(() => userStore.userInfo.token)
   // 1. 定義 state
   const cartList = ref([])
   // 2. 定義 action - addCart
-  const addCart = (goods) => {
-    // 加入購物車操作
-    // 已添加過 - count + 1
-    // 沒有添加過 - 直接 push
-    // 思路: 通過配對傳遞過來的商品對象中的 skuId 能不能在 cartList 中找到，找到就是加入過
-    const item = cartList.value.find(item => goods.skuId === item.skuId)
-    if (item) {
-      // 找到: 在已加入購物車的商品添加數量
-      item.count++ // 有 bug 第一個添加數量是正常的 後續再添加只會新增一件
+  const addCart = async (goods) => {
+    const { skuId, count } = goods
+    if (isLogin.value) {
+      // 登入之後的加入購物車邏輯
+      await insertCartAPI({ skuId, count })
+      const res = await findNewCartListAPI()
+      cartList.value = res.result
     } else {
-      // 沒找到: 在購物車新增商品
-      cartList.value.push(goods)
+      // 加入購物車操作
+      // 已添加過 - count + 1
+      // 沒有添加過 - 直接 push
+      // 思路: 通過配對傳遞過來的商品對象中的 skuId 能不能在 cartList 中找到，找到就是加入過
+      const item = cartList.value.find((item) => goods.skuId === item.skuId)
+      if (item) {
+        // 找到: 在已加入購物車的商品添加數量
+        item.count += goods.count // 有 bug 第一個添加數量是正常的 後續再添加只會新增一件
+      } else {
+        // 沒找到: 在購物車新增商品
+        cartList.value.push(goods)
+      }
     }
   }
 
@@ -52,10 +64,16 @@ export const useCartStore = defineStore('cart', () => {
   const allPrice = computed(() => cartList.value.reduce((prev, current) => prev + current.count * current.price, 0))
   // 3. 空車，可用於模板顯示，加上去逛逛按鈕
   const isEmptyCart = computed(() => cartList.value.length === 0) 
-
+  // 4. 已選擇數量 filter 返回結果為數組
+  const selectedCount = computed(() => cartList.value.filter(item => item.selected).reduce((prev, current) => prev + current.count, 0))
+  // 5. 已選擇商品價錢總計
+  const selectedPrice = computed(() => cartList.value.filter(item => item.selected).reduce((prev, current) => prev + current.count * current.price, 0))
+  
   // 是否全選
   // cartList.value.length > 0 考慮到可能會將所有商品刪除(空車)，但全選仍在的問題
   const isAll = computed(() => cartList.value.length > 0 && cartList.value.every((item) => item.selected))
+
+
 
   return {
     cartList,
@@ -63,6 +81,8 @@ export const useCartStore = defineStore('cart', () => {
     allPrice,
     isEmptyCart,
     isAll,
+    selectedCount,
+    selectedPrice,
     addCart,
     delCart,
     singleCheck,
