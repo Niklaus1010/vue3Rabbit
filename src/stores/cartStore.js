@@ -16,7 +16,8 @@ export const useCartStore = defineStore('cart', () => {
     cartList.value = res.result
   }
 
-  // 2. 定義 action - addCart
+  // 2. 定義 action 
+  // 加入購物車
   const addCart = async (goods) => {
     const { skuId, count } = goods
     if (isLogin.value) {
@@ -55,6 +56,11 @@ export const useCartStore = defineStore('cart', () => {
       const index = cartList.value.findIndex((item) => skuId === item.skuId) 
       cartList.value.splice(index, 1)
     }
+  }
+
+  // 清除購物車
+  const clearCart = () => {
+    cartList.value = []
   }
 
   // 單選功能
@@ -98,6 +104,7 @@ export const useCartStore = defineStore('cart', () => {
     selectedPrice,
     addCart,
     delCart,
+    clearCart,
     singleCheck,
     allCheck
   }

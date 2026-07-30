@@ -2,8 +2,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
+import { useCartStore } from '@/stores/cartStore'
 
 const userStore = useUserStore()
+const cartStore = useCartStore()
 
 // 表單驗證(帳號+密碼)
 // 1. 準備表單對象
@@ -43,7 +45,7 @@ const router = useRouter()
 const doLogin = () => {
   const { account, password } = form.value
   formRef.value.validate(async (valid) => {
-    console.log(valid)
+    // console.log(valid)
     // 以 valid 作為判斷條件，如果通過驗證才執行登入邏輯
     if (valid) {
       // TODO: login
