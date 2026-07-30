@@ -30,3 +30,12 @@ export const delCartAPI = (ids) => {
     }
   })
 }
+
+// 合併購物車
+export const mergeCartAPI = (data) => {
+  return httpInstance({
+    url: '/member/cart/merge',
+    method: 'POST',
+    data
+  })
+}
