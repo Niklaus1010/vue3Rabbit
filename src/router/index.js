@@ -16,32 +16,46 @@ const router = createRouter({
           component: () => import('@/views/Home/index.vue')
         },
         {
-          path: '/category/:id',
+          path: 'category/:id',
           component: () => import('@/views/Category/index.vue')
         },
         {
-          path: '/category/sub/:id',
+          path: 'category/sub/:id',
           component: () => import('@/views/SubCategory/index.vue')
         },
         {
-          path: '/detail/:id',
+          path: 'detail/:id',
           component: () => import('@/views/Detail/index.vue')
         },
         {
-          path: '/cartlist',
+          path: 'cartlist',
           component: () => import('@/views/CartList/index.vue')
         },
         {
-          path: '/checkout',
+          path: 'checkout',
           component: () => import('@/views/Checkout/index.vue')
         },
         {
-          path: '/pay',
+          path: 'pay',
           component: () => import('@/views/Pay/index.vue')
         },
         {
-          path: '/paycallback',
+          path: 'paycallback', // 後端有指定
           component: () => import('@/views/Pay/PayBack.vue')
+        },
+        {
+          path: 'member',
+          component: () => import('@/views/Member/index.vue'),
+          children: [
+            {
+              path: 'user',
+              component: () => import('@/views/Member/components/UserInfo.vue')
+            },
+            {
+              path: 'order',
+              component: () => import('@/views/Member/components/UserOrder.vue')
+            }
+          ]
         }
       ]
     }
@@ -55,3 +69,4 @@ const router = createRouter({
 })
 
 export default router
+
