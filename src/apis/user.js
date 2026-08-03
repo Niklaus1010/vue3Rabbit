@@ -11,3 +11,13 @@ export const loginAPI = ({account, password}) => {
     }
   })
 }
+
+// 猜你喜歡
+export const getLikeListAPI = ({ limit = 4 }) => {
+  return httpInstance({
+    url:'/goods/relevant',
+    params: {
+      limit 
+    }
+  })
+}
