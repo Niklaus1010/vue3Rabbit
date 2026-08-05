@@ -13,22 +13,39 @@ const tabTypes = [
 ]
 // 獲得訂單列表
 const orderList = ref([])
+const total = ref(0)
 const params = ref({
 	orderState: 0,
   page: 1,
   pageSize: 2
 })
+
+// 為解決切換後頁數先更新，但類別沒更新問題
+const uiPage = ref(1)
+const loading = ref(false)
 const getOrderList = async () => {
+  loading.value = true
   const res = await getUserOrder(params.value)
   orderList.value = res.result.items
+  total.value = res.result.counts
+  uiPage.value = params.value.page
+  loading.value = false
 }
 
 onMounted(() => getOrderList())
 
-// tab 切換
+// tab 切換 
 const tabChange = (type) => {
   // console.log(type)
   params.value.orderState = type
+  params.value.page = 1
+  getOrderList()
+}
+
+// 頁數切換
+const pageChange = (page) => {
+  // console.log(page)
+  params.value.page = page
   getOrderList()
 }
 </script>
@@ -113,7 +130,13 @@ const tabChange = (type) => {
           </div>
           <!-- 分頁 -->
           <div class="pagination-container">
-            <el-pagination background layout="prev, pager, next" />
+            <el-pagination
+              v-model:current-page="uiPage"
+              :total="total" 
+              @current-change="pageChange" 
+              :page-size="params.pageSize" 
+              background layout="prev, pager, next"
+              />
           </div>
         </div>
       </div>
