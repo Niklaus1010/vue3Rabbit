@@ -26,8 +26,8 @@ const confirm = () => {
               </template>
             </el-popconfirm>
           </li>
-          <li><a href="javascript:;">我的訂單</a></li>
-          <li><a href="javascript:;">會員中心</a></li>
+          <li><router-link to="/member/order">我的訂單</router-link></li>
+          <li><router-link to="/member/user">會員中心</router-link></li>
         </template>
         <template v-else>
           <!-- 存在疑惑 關於是否用 router-link 以及用 $router (vue2)問題，需不需要a連結跳轉 單頁面變多頁面 -->
