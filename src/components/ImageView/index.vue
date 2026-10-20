@@ -53,8 +53,8 @@ watch([elementX, elementY, isOutside], () => {
   if (elementX.value > 300) { left.value = 200 }
   if (elementX.value < 100) { left.value = 0 }
   // 縱向
-  if (elementX.value > 300) { left.value = 200 }
-  if (elementX.value < 100) { left.value = 0 }
+  if (elementY.value > 300) { top.value = 200 }
+  if (elementY.value < 100) { top.value = 0 }
 
   // 控制大圖的顯示
   positionX.value = -left.value * 2

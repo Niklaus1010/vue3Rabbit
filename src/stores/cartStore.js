@@ -32,7 +32,7 @@ export const useCartStore = defineStore('cart', () => {
       const item = cartList.value.find((item) => goods.skuId === item.skuId)
       if (item) {
         // 找到: 在已加入購物車的商品添加數量
-        item.count += goods.count // 有 bug 第一個添加數量是正常的 後續再添加只會新增一件
+        item.count += goods.count // 用 count++ 有 bug 第一個添加數量是正常的 後續再添加只會新增一件
       } else {
         // 沒找到: 在購物車新增商品
         cartList.value.push(goods)
