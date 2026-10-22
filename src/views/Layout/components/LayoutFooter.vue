@@ -14,8 +14,8 @@
         </dl>
         <dl>
           <dt>追蹤我們</dt>
-          <dd><i class="iconfont icon-weixin"></i> 公眾號</dd>
-          <dd><i class="iconfont icon-weibo"></i> 微博</dd>
+          <dd><i class="fa-brands fa-facebook"></i> Facebook</dd>
+          <dd><i class="fa-brands fa-instagram"></i> Instagram</dd>
         </dl>
         <dl>
           <dt>下載APP</dt>
@@ -28,7 +28,7 @@
         </dl>
         <dl>
           <dt>服務專線</dt>
-          <dd class="hotline">400-0000-000 <small>周一至周日 8:00-18:00</small></dd>
+          <dd class="hotline">0800-080-800 <small>週一至週日 09:00-18:00</small></dd>
         </dl>
       </div>
     </div>
@@ -57,8 +57,8 @@
             <a href="javascript:;">售後服務</a>
             <a href="javascript:;">配送與驗收</a>
             <a href="javascript:;">商務合作</a>
-            <a href="javascript:;">搜索推薦</a>
-            <a href="javascript:;">友情鏈接</a>
+            <a href="javascript:;">搜尋推薦</a>
+            <a href="javascript:;">友情連結</a>
           </p>
           <p>CopyRight © 小兔鮮兒</p>
         </div>
@@ -111,16 +111,17 @@
       padding-top: 10px;
       border: 1px solid #ededed;
 
-      .iconfont {
-        font-size: 36px;
+      i {    
         display: block;
+        width: 100%;
+        font-size: 36px;
         color: #666;
+        text-align: center;
+        line-height: 1;
+        margin-bottom: 8px;
       }
-
       &:hover {
-        .iconfont {
-          color: $xtxColor;
-        }
+        i { color: $xtxColor; }
       }
 
       &:last-child {

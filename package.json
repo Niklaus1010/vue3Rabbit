@@ -12,6 +12,7 @@
     "lint:eslint": "eslint . --fix --cache"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.3.1",
     "@vueuse/core": "^14.3.0",
     "axios": "^1.18.0",
     "dayjs": "^1.11.21",

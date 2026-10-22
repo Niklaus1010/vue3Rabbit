@@ -8,6 +8,9 @@ import router from './router'
 // 引入初始化樣式文件
 import '@/styles/common.scss'
 
+// 圖標
+import '@fortawesome/fontawesome-free/css/all.min.css'
+
 // 引入懶加載指令插件並註冊
 import { lazyPlugin } from '@/directives'
 // 引入全局組件插件

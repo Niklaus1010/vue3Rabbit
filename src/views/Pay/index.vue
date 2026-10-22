@@ -19,7 +19,7 @@ onMounted(() => getPayInfo())
 // 付款跳轉
 // 攜帶 訂單id 以及 回調地址 跳轉到付款地址 (get)
 const baseURL = 'https://pcapi-xiaotuxian-front-devtest.itheima.net/'
-const backURL = 'http://127.0.0.1:5173/paycallback'
+const backURL = `${window.location.origin}/paycallback`
 const redirectUrl = encodeURIComponent(backURL)
 const payUrl = `${baseURL}pay/aliPay?orderId=${route.query.id}&redirect=${redirectUrl}`
 </script>
@@ -42,7 +42,7 @@ const payUrl = `${baseURL}pay/aliPay?orderId=${route.query.id}&redirect=${redire
       </div>
       <!-- 付款方式 -->
       <div class="pay-type">
-        <p class="head">選擇以下支付方式付款</p>
+        <p class="head">選擇以下方式付款</p>
         <div class="item">
           <p>支付平台</p>
           <a class="btn wx" href="javascript:;"></a>

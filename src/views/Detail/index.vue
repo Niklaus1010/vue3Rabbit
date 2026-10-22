@@ -1,175 +1,213 @@
 <script setup>
 import DetailHot from './components/DetailHot.vue'
 import { getDetail } from '@/apis/detail'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useCartStore } from '@/stores/cartStore.js'
 
 const cartStore = useCartStore()
 const route = useRoute()
 const goods = ref({})
+const loading = ref(true) // 第一次進就顯示骨架
+
 const getGoods = async () => {
-  const res = await getDetail(route.params.id)
-  goods.value = res.result
+  loading.value = true
+  try {
+    const res = await getDetail(route.params.id)
+    goods.value = res.result
+  } finally {
+    loading.value = false
+  }
 }
 onMounted(() => getGoods())
 
+// 同一個元件內，網址的 id 變了就重新抓資料(點熱門排行的時候)
+watch(() => route.params.id, (newId) => {
+  if (newId) {
+    getGoods()
+    // 換商品時，重置規格選擇和數量
+    skuObj.value = {}
+    count.value = 1
+  }
+})
+
 // sku規格被操作時
-let skuObj = {} // let 可以重新賦值，const 為常量
+// 為了拿到庫存，所以
+const skuObj = ref({}) 
 const skuChange = (sku) => {
-  // console.log(sku)
-  skuObj = sku
+  console.log(sku)
+  skuObj.value = sku
 }
+
+const stock = computed(() => skuObj.value.inventory)
 
 // 購物車商品數量修改
 const count = ref(1)
-const countChange = (count) => {
-  console.log(count)
-}
+// 好像用不到先註解
+// const countChange = (count) => {
+//   console.log(count)
+// }
+// 如果有用到解開後把下面加到 數據組件 <el-input-number :min="1" v-model="count" />          
+// @change="countChange" 
 
 // 加入購物車
 const addCart = () => {
-  if (skuObj.skuId) {
-    // 規格已選擇 觸發 action
-    cartStore.addCart({
-      id: goods.value.id,
-      name: goods.value.name,
-      picture: goods.value.mainPictures[0],
-      price: goods.value.price,
-      count: count.value,
-      skuId: skuObj.skuId,
-      attrText: skuObj.specsText,
-      selected: true
-    })
-  } else {
-    // 規格未選擇 提示用戶
+  if (!skuObj.value.skuId) {
     ElMessage.warning('請選擇規格')
+    return
   }
+
+  const inventory = skuObj.value.inventory
+  const inCart = cartStore.cartList.find(i => i.skuId === skuObj.value.skuId)?.count ?? 0
+
+  if (inCart + count.value > inventory) {
+    ElMessage.warning(`庫存僅剩 ${inventory} 件，購物車已有 ${inCart} 件`)
+    return
+  }
+
+  cartStore.addCart({
+    id: goods.value.id,
+    name: goods.value.name,
+    picture: goods.value.mainPictures[0],
+    price: goods.value.price,
+    count: count.value,
+    skuId: skuObj.value.skuId,
+    attrsText: skuObj.value.specsText,
+    inventory,   
+    selected: true
+  })
 }
 </script>
 
 <template>
   <div class="xtx-goods-page">
-    <div class="container" v-if="goods.details">
-      <div class="bread-container">
-        <el-breadcrumb separator=">">
-          <el-breadcrumb-item :to="{ path: '/' }">首頁</el-breadcrumb-item>
-          <!-- 
-            錯誤原因: goods 一開始為{} {}.categories -> undefined -> undefined[1]
-            解決方法:
-            1. 可選鏈的語法 ?.
-            2. v-if 手動控制渲染時機，確保只有數據存在才渲染
-          -->
-          <!-- <el-breadcrumb-item :to="{ path: `/category/${goods.categories?.[1].id}` }">{{ goods.categories?.[1].name }}
-          </el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: `/category/${goods.categories?.[0].id}` }">{{ goods.categories?.[0].name }}
-          </el-breadcrumb-item> -->
-          <el-breadcrumb-item :to="{ path: `/category/${goods.categories[1].id}` }">{{ goods.categories[1].name }}
-          </el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ path: `/category/${goods.categories[0].id}` }">{{ goods.categories[0].name }}
-          </el-breadcrumb-item>
-          <el-breadcrumb-item>抓絨保暖，毛毛蟲子兒童運動鞋</el-breadcrumb-item>
-        </el-breadcrumb>
-      </div>
-      <!-- 商品資訊 -->
-      <div class="info-container">
-        <div>
-          <div class="goods-info">
-            <div class="media">
-              <!-- 圖片預覽區 -->
-              <XtxImageView :image-list="goods.mainPictures"></XtxImageView>
-              <!-- 統計數量 -->
-              <ul class="goods-sales">
-                <li>
-                  <p>銷量人氣</p>
-                  <p>{{ goods.salesCount }}</p>
-                  <p><i class="iconfont icon-task-filling"></i>銷量人氣</p>
-                </li>
-                <li>
-                  <p>商品評價</p>
-                  <p>{{ goods.commentCount }}</p>
-                  <p><i class="iconfont icon-comment-filling"></i>查看評價</p>
-                </li>
-                <li>
-                  <p>收藏人氣</p>
-                  <p>{{ goods.collectCount }}</p>
-                  <p><i class="iconfont icon-favorite-filling"></i>收藏商品</p>
-                </li>
-                <li>
-                  <p>品牌資訊</p>
-                  <!-- 後端沒給數據 -->
-                  <p>{{ goods.brand?.name || '無' }}</p>
-                  <p><i class="iconfont icon-dynamic-filling"></i>品牌主頁</p>
-                </li>
-              </ul>
-            </div>
-            <div class="spec">
-              <!-- 商品信息區 -->
-              <p class="g-name"> {{ goods.name }} </p>
-              <p class="g-desc">{{ goods.desc }} </p>
-              <p class="g-price">
-                <span>{{ goods.price }}</span>
-                <span>{{ goods.oldPrice }}</span>
-              </p>
-              <div class="g-service">
-                <dl>
-                  <dt>促銷</dt>
-                  <dd>12月好物放送，App領券購買直降120元</dd>
-                </dl>
-                <dl>
-                  <dt>服務</dt>
-                  <dd>
-                    <span>無憂退貨</span>
-                    <span>快速退款</span>
-                    <span>免費包郵</span>
-                    <a href="javascript:;">了解詳情</a>
-                  </dd>
-                </dl>
-              </div>
-              <!-- sku組件 -->
-              <XtxSku :goods="goods" @change="skuChange"></XtxSku>
-              <!-- 數據組件 -->
-              <el-input-number :min="1" v-model="count" @change="countChange" />
-              <!-- 按鈕組件 -->
-              <div>
-                <el-button size="large" class="btn" @click="addCart">
-                  加入購物車
-                </el-button>
-              </div>
-
-            </div>
+    <div class="container">
+      <el-skeleton :loading="loading || !goods.details" animated :rows="12">
+        <template #default>
+          <!-- 麵包屑、商品資訊、詳情：原本 v-if="goods.details" 裡面的內容整段放這裡 -->
+          <div class="bread-container">
+          <el-breadcrumb separator=">">
+            <el-breadcrumb-item :to="{ path: '/' }">首頁</el-breadcrumb-item>
+            <!-- 
+              錯誤原因: goods 一開始為{} {}.categories -> undefined -> undefined[1]
+              解決方法:
+              1. 可選鏈的語法 ?.
+              2. v-if 手動控制渲染時機，確保只有數據存在才渲染
+            -->
+            <!-- <el-breadcrumb-item :to="{ path: `/category/${goods.categories?.[1].id}` }">{{ goods.categories?.[1].name }}
+            </el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: `/category/${goods.categories?.[0].id}` }">{{ goods.categories?.[0].name }}
+            </el-breadcrumb-item> -->
+            <el-breadcrumb-item :to="{ path: `/category/${goods.categories[1].id}` }">{{ goods.categories[1].name }}
+            </el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: `/category/${goods.categories[0].id}` }">{{ goods.categories[0].name }}
+            </el-breadcrumb-item>
+            <el-breadcrumb-item>{{ goods.name }}</el-breadcrumb-item>
+          </el-breadcrumb>
           </div>
-          <div class="goods-footer">
-            <div class="goods-article">
-              <!-- 商品詳情 -->
-              <div class="goods-tabs">
-                <nav>
-                  <a>商品詳情</a>
-                </nav>
-                <div class="goods-detail">
-                  <!-- 屬性 -->
-                  <ul class="attrs">
-                    <li v-for="item in goods.details.properties" :key="item.value">
-                      <span class="dt">{{ item.name }}</span>
-                      <!-- 有些值可以不用拿 -->
-                      <span class="dd">{{ item.value }}</span>
+          <!-- 商品資訊 -->
+          <div class="info-container">
+            <div>
+              <div class="goods-info">
+                <div class="media">
+                  <!-- 圖片預覽區 -->
+                  <XtxImageView :image-list="goods.mainPictures"></XtxImageView>
+                  <!-- 統計數量 -->
+                  <ul class="goods-sales">
+                    <li>
+                      <p>銷量人氣</p>
+                      <p>{{ goods.salesCount }}</p>
+                      <p><i class="iconfont icon-task-filling"></i>銷量人氣</p>
+                    </li>
+                    <li>
+                      <p>商品評價</p>
+                      <p>{{ goods.commentCount }}</p>
+                      <p><i class="iconfont icon-comment-filling"></i>查看評價</p>
+                    </li>
+                    <li>
+                      <p>收藏人氣</p>
+                      <p>{{ goods.collectCount }}</p>
+                      <p><i class="iconfont icon-favorite-filling"></i>收藏商品</p>
+                    </li>
+                    <li>
+                      <p>品牌資訊</p>
+                      <!-- 後端沒給數據 -->
+                      <p>{{ goods.brand?.name || '無' }}</p>
+                      <p><i class="iconfont icon-dynamic-filling"></i>品牌主頁</p>
                     </li>
                   </ul>
-                  <!-- 圖片 -->
-                  <img v-for="img in goods.details.pictures" :src="img" :key="img" alt="">
+                </div>
+                <div class="spec">
+                  <!-- 商品資訊區 -->
+                  <p class="g-name"> {{ goods.name }} </p>
+                  <p class="g-desc">{{ goods.desc }} </p>
+                  <p class="g-price">
+                    <span>{{ goods.price }}</span>
+                    <span>{{ goods.oldPrice }}</span>
+                  </p>
+                  <div class="g-service">
+                    <dl>
+                      <dt>促銷</dt>
+                      <dd>12月好物放送，App領券購買直降120元</dd>
+                    </dl>
+                    <dl>
+                      <dt>服務</dt>
+                      <dd>
+                        <span>無憂退貨</span>
+                        <span>快速退款</span>
+                        <span>免費包郵</span>
+                        <a href="javascript:;">了解詳情</a>
+                      </dd>
+                    </dl>
+                  </div>
+                  <!-- sku組件 -->
+                  <XtxSku :goods="goods" @change="skuChange"></XtxSku>
+                  <!-- 數據組件 -->
+                  <!-- 設置最大值與庫存相同 -->
+                  <el-input-number :min="1" :max="stock" :disabled="!stock" v-model="count" />
+                  <span v-if="stock" class="stock">商品數量 : {{ stock }} </span>
+                  <!-- 按鈕組件 -->
+                  <div>
+                    <el-button size="large" class="btn" @click="addCart">
+                      加入購物車
+                    </el-button>
+                  </div>
+
+                </div>
+              </div>
+              <div class="goods-footer">
+                <div class="goods-article">
+                  <!-- 商品詳情 -->
+                  <div class="goods-tabs">
+                    <nav>
+                      <a>商品詳情</a>
+                    </nav>
+                    <div class="goods-detail">
+                      <!-- 屬性 -->
+                      <ul class="attrs">
+                        <li v-for="item in goods.details.properties" :key="item.value">
+                          <span class="dt">{{ item.name }}</span>
+                          <!-- 有些值可以不用拿 -->
+                          <span class="dd">{{ item.value }}</span>
+                        </li>
+                      </ul>
+                      <!-- 圖片 -->
+                      <img v-for="img in goods.details.pictures" :src="img" :key="img" alt="">
+                    </div>
+                  </div>
+                </div>
+                <!-- 24熱榜+專題推薦 -->
+                <div class="goods-aside">
+                  <!-- 24小時 -->
+                  <DetailHot :hot-type="1"></DetailHot>
+                  <!-- 周榜 -->
+                  <DetailHot :hot-type="2"></DetailHot>
                 </div>
               </div>
             </div>
-            <!-- 24熱榜+專題推薦 -->
-            <div class="goods-aside">
-              <!-- 24小時 -->
-              <DetailHot :hot-type="1"></DetailHot>
-              <!-- 周榜 -->
-              <DetailHot :hot-type="2"></DetailHot>
-            </div>
           </div>
-        </div>
-      </div>
+        </template>
+      </el-skeleton>
     </div>
   </div>
 </template>
@@ -245,7 +283,7 @@ const addCart = () => {
 
     span {
       &::before {
-        content: "¥";
+        content: "NT$";
         font-size: 14px;
       }
 
@@ -299,6 +337,11 @@ const addCart = () => {
         }
       }
     }
+  }
+
+  .stock {
+    margin-left: 10px;
+    color: #999;
   }
 
   .goods-sales {

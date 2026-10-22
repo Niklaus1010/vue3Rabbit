@@ -2,7 +2,7 @@
 // 以24小時熱榜獲取數據渲染模板
 // 1. 封裝接口
 import { getHotGoodsAPI } from '@/apis/detail'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 // 設計props參數 配對不同的title和數據
@@ -32,6 +32,10 @@ const getHotList = async () => {
 }
 
 onMounted(() => getHotList())
+
+watch(() => route.params.id, (newId) => {
+  if (newId) getHotList()
+})
 </script>
 
 
@@ -39,7 +43,7 @@ onMounted(() => getHotList())
   <div class="goods-hot">
     <h3>{{ title }}</h3>
     <!-- 商品區塊 -->
-    <RouterLink to="/" class="goods-item" v-for="item in hotList" :key="item.id">
+    <RouterLink :to="`/detail/${item.id}`" class="goods-item" v-for="item in hotList" :key="item.id">
       <img :src="item.picture" alt="" />
       <p class="name ellipsis">{{ item.name }}</p>
       <p class="desc ellipsis">{{ item.desc }}</p>

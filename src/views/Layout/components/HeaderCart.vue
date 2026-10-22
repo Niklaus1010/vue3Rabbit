@@ -21,7 +21,7 @@ const cartStore = useCartStore()
               <p class="attr ellipsis">{{ i.attrsText }}</p>
             </div>
             <div class="right">
-              <p class="price">&yen;{{ i.price }}</p>
+              <p class="price">NT${{ i.price }}</p>
               <p class="count">x{{ i.count }}</p>
             </div>
           </RouterLink>
@@ -32,7 +32,7 @@ const cartStore = useCartStore()
         <div class="total">
           <p>共 {{ cartStore.allCount }} 件商品</p>
           <!-- 理論上台灣沒在用小數點，除了金融相關 -->
-          <p>&yen; {{ cartStore.allPrice.toFixed(2) }} </p>
+          <p>NT$ {{ cartStore.allPrice.toFixed(2) }} </p>
         </div>
         <el-button size="large" type="primary" @click="$router.push('/cartlist')">去購物車結帳</el-button>
       </div>

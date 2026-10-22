@@ -48,17 +48,18 @@ const allCheck = (selected) => {
                     <p class="name ellipsis">
                       {{ i.name }}
                     </p>
+                    <p class="attr ellipsis">{{ i.attrsText }}</p>
                   </div>
                 </div>
               </td>
               <td class="tc">
-                <p>&yen;{{ i.price }}</p>
+                <p>NT${{ i.price }}</p>
               </td>
               <td class="tc">
                 <el-input-number :min="1" v-model="i.count" />
               </td>
               <td class="tc">
-                <p class="f16 red">&yen;{{ (i.price * i.count).toFixed(2) }}</p>
+                <p class="f16 red">NTS{{ (i.price * i.count).toFixed(2) }}</p>
               </td>
               <td class="tc">
                 <p>
@@ -87,7 +88,7 @@ const allCheck = (selected) => {
       <div class="action">
         <div class="batch">
           共 {{ cartStore.allCount }} 件商品，已選擇 {{ cartStore.selectedCount }} 件，商品合計：
-          <span class="red">¥ {{ cartStore.selectedPrice.toFixed(2) }} </span>
+          <span class="red">NT$ {{ cartStore.selectedPrice.toFixed(2) }} </span>
         </div>
         <div class="total">
           <el-button size="large" type="primary" @click="$router.push('/checkout')">下單結算</el-button>

@@ -47,8 +47,9 @@ const load = async () => {
   reqData.value.page++
   const res = await getSubCategoryAPI(reqData.value)
   goodList.value = [...goodList.value, ...res.result.items] // 不確定用push行不行
-  // 載入完畢 停止監聽，有bug 如果重新往上在往下會發起多次請求
-  if (res.result.items === 0) {
+  // 載入完畢 停止監聽，.items是 arr，永遠不會為0，重新往上再往下會發起多次請求
+  // 所以改用.items.length
+  if (res.result.items.length === 0) {
     disabled.value = true
   }
 }
@@ -59,8 +60,9 @@ const load = async () => {
     <!-- 麵包屑 -->
     <div class="bread-container">
       <el-breadcrumb separator=">">
-        <el-breadcrumb-item :to="{ path: '/' }">首頁</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: `/category/${categoryData.parentId}` }">{{ categoryData.parentName }}
+        <!-- 兩個都加 v-if，避免載入請求未回來時，只有出現兩個箭頭的情況 -->
+        <el-breadcrumb-item v-if="categoryData.parentName" :to="{ path: '/' }">首頁</el-breadcrumb-item>
+        <el-breadcrumb-item v-if="categoryData.name" :to="{ path: `/category/${categoryData.parentId}` }">{{ categoryData.parentName }}
         </el-breadcrumb-item>
         <el-breadcrumb-item>{{ categoryData.name }}</el-breadcrumb-item>
       </el-breadcrumb>
@@ -95,6 +97,8 @@ const load = async () => {
   .body {
     display: flex;
     flex-wrap: wrap;
+    // 給最小高度讓載入時的畫面不會往上縮
+    min-height: 600px;
     padding: 0 10px;
   }
 

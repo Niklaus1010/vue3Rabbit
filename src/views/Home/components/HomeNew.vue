@@ -23,8 +23,8 @@ onMounted(() => getNewList())
       <li v-for="item in newList" :key="item.id">
         <RouterLink :to="`/detail/${item.id}`">
           <img v-img-lazy="item.picture" alt="" />
-          <p class="name">{{ item.name }}</p>
-          <p class="price">&yen;{{ item.price }}</p>
+          <p class="name" :title="item.name">{{ item.name }}</p>
+          <p class="price">NT${{ item.price }}</p>
         </RouterLink>
       </li>
     </ul>
@@ -58,7 +58,7 @@ onMounted(() => getNewList())
 
     p {
       font-size: 22px;
-      padding-top: 12px;
+      padding: 12px 25px 0;
       text-align: center;
       text-overflow: ellipsis;
       overflow: hidden;
