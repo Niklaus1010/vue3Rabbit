@@ -25,9 +25,12 @@ onMounted(() => getOrderInfo())
         <p class="tip">我們將盡快為您發貨，收貨期間請保持手機暢通</p>
         <p>付款方式：<span>支付寶</span></p>
         <!-- 加可選鏈 -->
-        <p>付款金額：<span>¥{{ orderInfo.payMoney?.toFixed(2) }}</span></p>
+        <p>付款金額：
+          <span v-if="orderInfo.payMoney != null">NT${{ orderInfo.payMoney.toFixed(2) }}</span>
+          <span v-else>--</span>
+        </p>
         <div class="btn">
-          <el-button type="primary" style="margin-right:20px">查看訂單</el-button>
+          <el-button type="primary" style="margin-right:20px" @click="$router.push('/member/order')">查看訂單</el-button>
           <el-button>進入首頁</el-button>
         </div>
         <p class="alert">
