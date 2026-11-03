@@ -69,7 +69,7 @@ const addCart = () => {
     id: goods.value.id,
     name: goods.value.name,
     picture: goods.value.mainPictures[0],
-    price: goods.value.price,
+    price: skuObj.value.price,
     count: count.value,
     skuId: skuObj.value.skuId,
     attrsText: skuObj.value.specsText,
@@ -141,9 +141,10 @@ const addCart = () => {
                   <!-- 商品資訊區 -->
                   <p class="g-name"> {{ goods.name }} </p>
                   <p class="g-desc">{{ goods.desc }} </p>
+                  <!-- 未選擇規格前給默認價 -->
                   <p class="g-price">
-                    <span>{{ goods.price }}</span>
-                    <span>{{ goods.oldPrice }}</span>
+                    <span>{{ skuObj.price ?? goods.price }}</span>
+                    <span>{{ skuObj.oldPrice ?? goods.oldPrice }}</span>
                   </p>
                   <div class="g-service">
                     <dl>

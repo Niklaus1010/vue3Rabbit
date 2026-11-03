@@ -72,9 +72,12 @@ export const useCartStore = defineStore('cart', () => {
 
   // 全選功能
   const allCheck = (selected) => {
-    // 把 cartList 中的每一項 selected 都設置為當前的全選框狀態
-    cartList.value.forEach(item => item.selected = selected)
+    // 在商品有效的情況下，把 cartList 中的每一項 selected 都設置為當前的全選框狀態
+    cartList.value.filter(isValid).forEach(item => item.selected = selected)
   }
+
+  // 商品失效，購物車下單後不會一起提交到下單頁
+  const isValid = (item) => item.isEffective !== false
 
   // 計算屬性
   // 1. 總數 所有項的 count 之和
@@ -83,10 +86,12 @@ export const useCartStore = defineStore('cart', () => {
   const allPrice = computed(() => cartList.value.reduce((prev, current) => prev + current.count * current.price, 0))
   // 3. 空車，可用於模板顯示，加上去逛逛按鈕
   const isEmptyCart = computed(() => cartList.value.length === 0) 
-  // 4. 已選擇數量 filter 返回結果為數組
-  const selectedCount = computed(() => cartList.value.filter(item => item.selected).reduce((prev, current) => prev + current.count, 0))
-  // 5. 已選擇商品價錢總計
-  const selectedPrice = computed(() => cartList.value.filter(item => item.selected).reduce((prev, current) => prev + current.count * current.price, 0))
+  // 4. 原本並無判斷有效商品，重新加入條件
+  const selectedList = computed(() => cartList.value.filter(item => isValid(item) && item.selected))
+  // 5. 已選擇數量 filter 返回結果為數組
+  const selectedCount = computed(() => selectedList.value.reduce((prev, current) => prev + current.count, 0))
+  // 6. 已選擇商品價錢總計
+  const selectedPrice = computed(() => selectedList.value.reduce((prev, current) => prev + current.count * current.price, 0))
   
   // 是否全選
   // cartList.value.length > 0 考慮到可能會將所有商品刪除(空車)，但全選仍在的問題
@@ -107,7 +112,7 @@ export const useCartStore = defineStore('cart', () => {
     delCart,
     clearCart,
     singleCheck,
-    allCheck
+    allCheck,
   }
 }, {
   persist: true

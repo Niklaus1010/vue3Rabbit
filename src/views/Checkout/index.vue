@@ -107,10 +107,10 @@ const createOrder = async () => {
                     </div>
                   </a>
                 </td>
-                <td>&yen;{{ i.price }}</td>
-                <td>{{ i.price }}</td>
-                <td>&yen;{{ i.totalPrice }}</td>
-                <td>&yen;{{ i.totalPayPrice }}</td>
+                <td>NT${{ i.price }}</td>
+                <td>{{ i.count }}</td>
+                <td>NT${{ i.totalPrice }}</td>
+                <td>NT${{ i.totalPayPrice }}</td>
               </tr>
             </tbody>
           </table>
@@ -118,9 +118,9 @@ const createOrder = async () => {
         <!-- 配送時間 -->
         <h3 class="box-title">配送時間</h3>
         <div class="box-body">
-          <a class="my-btn active" href="javascript:;">不限送貨時間：周一至周日</a>
-          <a class="my-btn" href="javascript:;">工作日送貨：周一至周五</a>
-          <a class="my-btn" href="javascript:;">雙休日、假日送貨：周六至周日</a>
+          <a class="my-btn active" href="javascript:;">不限送貨時間：週一至週日</a>
+          <a class="my-btn" href="javascript:;">工作日送貨：週一至週五</a>
+          <a class="my-btn" href="javascript:;">雙休日、假日送貨：週六至週日</a>
         </div>
         <!-- 支付方式 -->
         <h3 class="box-title">付款方式</h3>

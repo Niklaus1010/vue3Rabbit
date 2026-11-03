@@ -39,12 +39,16 @@ const allCheck = (selected) => {
             <tr v-for="i in cartStore.cartList" :key="i.id">
               <td>
                 <!-- 單選框  singleCheck 裡的 i 是為了拿 skuId-->
-                <el-checkbox :model-value="i.selected" @change="(selected) => singleCheck(i, selected)"/>
+                <el-checkbox 
+                :model-value="i.isEffective !== false && i.selected" 
+                :disabled="i.isEffective === false"
+                @change="(selected) => singleCheck(i, selected)"/>
               </td>
               <td>
                 <div class="goods">
                   <RouterLink to="/"><img :src="i.picture" alt="" /></RouterLink>
                   <div>
+                    <span v-if="i.isEffective === false" class="tag">商品已失效</span>
                     <p class="name ellipsis">
                       {{ i.name }}
                     </p>
