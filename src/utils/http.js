@@ -50,7 +50,7 @@ httpInstance.interceptors.response.use(res => {
   return deepConvert(res.data)
 }, e => {
   const userStore = useUserStore()
-  ElMessage.error(e.response.data.message)
+  ElMessage.error(e.response?.data?.message || '網路異常，請稍後再試')
   // 401 token 失效處理
   // 1. 清除本地用戶資料
   // 2. 跳轉到登入頁

@@ -31,7 +31,7 @@ onMounted(() => getOrderInfo())
         </p>
         <div class="btn">
           <el-button type="primary" style="margin-right:20px" @click="$router.push('/member/order')">查看訂單</el-button>
-          <el-button>進入首頁</el-button>
+          <el-button @click="$router.push('/')">進入首頁</el-button>
         </div>
         <p class="alert">
           <span class="iconfont icon-tip"></span>

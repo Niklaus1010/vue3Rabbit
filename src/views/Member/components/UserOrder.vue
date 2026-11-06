@@ -1,6 +1,11 @@
 <script setup>
 import { getUserOrder } from '@/apis/order'
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import CancelOrderDialog from '@/components/CancelOrderDialog.vue'
+
+const router = useRouter()
+
 // tab列表
 const tabTypes = [
   { name: "all", label: "全部訂單" },
@@ -60,6 +65,29 @@ const formatPayState = (payState) => {
   }
   return stateMap[payState]
 }
+
+const goPay = (id) => {
+  router.push({
+    path: '/pay',
+    query: { id }
+  })
+}
+
+const formatCountdown = (seconds) => {
+  if (!seconds || seconds <= 0) return '已逾時'
+  const minute = String(Math.floor(seconds / 60)).padStart(2, '0')
+  const second = String(seconds % 60).padStart(2, '0')
+  return `${minute}分${second}秒`
+}
+
+const goDetail = (id) => router.push(`/member/order/${id}`)
+
+const showCancel = ref(false)
+const cancelId = ref('')
+const openCancel = (id) => {
+  cancelId.value = id
+  showCancel.value = true
+}
 </script>
 
 <template>
@@ -81,7 +109,7 @@ const formatPayState = (payState) => {
               <!-- 未付款，倒計時時間還有 -->
               <span class="down-time" v-if="order.orderState === 1">
                 <i class="iconfont icon-down-time"></i>
-                <b>付款截止: {{order.countdown}}</b>
+                <b>付款截止: {{ formatCountdown(order.countdown) }}</b>
               </span>
             </div>
             <div class="body">
@@ -99,7 +127,7 @@ const formatPayState = (payState) => {
                         <span>{{ item.attrsText }}</span>
                       </p>
                     </div>
-                    <div class="price">¥{{ item.realPay?.toFixed(2) }}</div>
+                    <div class="price">NT${{ item.realPay?.toFixed(2) }}</div>
                     <div class="count">x{{ item.quantity }}</div>
                   </li>
                 </ul>
@@ -117,26 +145,26 @@ const formatPayState = (payState) => {
                 </p>
               </div>
               <div class="column amount">
-                <p class="red">¥{{ order.payMoney?.toFixed(2) }}</p>
-                <p>（含運費：¥{{ order.postFee?.toFixed(2) }}）</p>
-                <p>在線支付</p>
+                <p class="red">NT${{ order.payMoney?.toFixed(2) }}</p>
+                <p>（含運費：NT${{ order.postFee?.toFixed(2) }}）</p>
+                <p>線上支付</p>
               </div>
               <div class="column action">
-                <el-button  v-if="order.orderState === 1" type="primary"
-                  size="small">
+                <el-button  v-if="order.orderState === 1 && order.countdown > 0" type="primary"
+                  size="small" @click="goPay(order.id)">
                   立即付款
                 </el-button>
                 <el-button v-if="order.orderState === 3" type="primary" size="small">
                   確認收貨
                 </el-button>
-                <p><a href="javascript:;">查看詳情</a></p>
+                <p><a href="javascript:;" @click="goDetail(order.id)">查看詳情</a></p>
                 <p v-if="[2, 3, 4, 5].includes(order.orderState)">
                   <a href="javascript:;">再次購買</a>
                 </p>
                 <p v-if="[4, 5].includes(order.orderState)">
                   <a href="javascript:;">申請售後</a>
                 </p>
-                <p v-if="order.orderState === 1"><a href="javascript:;">取消訂單</a></p>
+                <p v-if="order.orderState === 1"><a href="javascript:;" @click="openCancel(order.id)">取消訂單</a></p>
               </div>
             </div>
           </div>
@@ -152,8 +180,8 @@ const formatPayState = (payState) => {
           </div>
         </div>
       </div>
-
     </el-tabs>
+    <CancelOrderDialog v-model="showCancel" :order-id="cancelId" @canceled="getOrderList" />
   </div>
 
 </template>

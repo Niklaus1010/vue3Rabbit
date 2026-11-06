@@ -11,6 +11,9 @@ importers:
       '@fortawesome/fontawesome-free':
         specifier: ^7.3.1
         version: 7.3.1
+      '@simoko/tw-zip':
+        specifier: ^1.1.0
+        version: 1.1.0(vue@3.5.38)
       '@vueuse/core':
         specifier: ^14.3.0
         version: 14.3.0(vue@3.5.38)
@@ -20,6 +23,9 @@ importers:
       dayjs:
         specifier: ^1.11.21
         version: 1.11.21
+      element-china-area-data:
+        specifier: ^6.1.0
+        version: 6.1.0
       element-plus:
         specifier: ^2.14.2
         version: 2.14.2(vue@3.5.38)
@@ -671,6 +677,26 @@ packages:
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
 
+  '@simoko/tw-zip@1.1.0':
+    resolution: {integrity: sha512-lEW7qZgsxytlNmhtg3SrsCKNp6XEUbBIVrHjAsetcW5LLALLVcSGbXI1cC1UNBfzoSrPn/mLhzM/sm8xFvWtDQ==}
+    peerDependencies:
+      '@angular/core': '>=16.0.0'
+      react: '>=16.8.0'
+      solid-js: '>=1.0.0'
+      svelte: '>=3.0.0'
+      vue: '>=3.0.0'
+    peerDependenciesMeta:
+      '@angular/core':
+        optional: true
+      react:
+        optional: true
+      solid-js:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+
   '@sxzz/popperjs-es@2.11.8':
     resolution: {integrity: sha512-wOwESXvvED3S8xBmcPWHs2dUuzrE4XiZeFu7e1hROIJkm02a49N120pmOXxY33sBb6hArItm5W5tcg1cBtV+HQ==}
 
@@ -875,6 +901,9 @@ packages:
   caniuse-lite@1.0.30001799:
     resolution: {integrity: sha512-hG1bReV+OUU+MOqK4t/ZWI0tZOyz3rqS9XuhOUz1cIcbwBKjOyJEJuw9ER5JuNyqxNk8u/JUVbGibBOL1yrjFw==}
 
+  china-division@2.7.0:
+    resolution: {integrity: sha512-4uUPAT+1WfqDh5jytq7omdCmHNk3j+k76zEG/2IqaGcYB90c2SwcixttcypdsZ3T/9tN1TTpBDoeZn+Yw/qBEA==}
+
   chokidar@5.0.0:
     resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==}
     engines: {node: '>= 20.19.0'}
@@ -952,6 +981,9 @@ packages:
 
   electron-to-chromium@1.5.376:
     resolution: {integrity: sha512-cUVA7/RvbFTEuw/i3obUwDTRIXojaxkResf+ibByPFxjc6XK3VNtcQXV0NSbAlJ0FMjcJGgftVVB4Qo184EXvA==}
+
+  element-china-area-data@6.1.0:
+    resolution: {integrity: sha512-IkpcjwQv2A/2AxFiSoaISZ+oMw1rZCPUSOg5sOCwT5jKc96TaawmKZeY81xfxXsO0QbKxU5LLc6AirhG52hUmg==}
 
   element-plus@2.14.2:
     resolution: {integrity: sha512-eNH9uP3wQoNqieEIHXiNvIVv+zO5sZDU0CAZq5b0zqSN06DD0/V9xIq1R/qm3rw5k3nBTM1JvpxhCfRbaFLzDQ==}
@@ -2329,6 +2361,10 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
+  '@simoko/tw-zip@1.1.0(vue@3.5.38)':
+    optionalDependencies:
+      vue: 3.5.38
+
   '@sxzz/popperjs-es@2.11.8': {}
 
   '@tybys/wasm-util@0.10.2':
@@ -2582,6 +2618,8 @@ snapshots:
 
   caniuse-lite@1.0.30001799: {}
 
+  china-division@2.7.0: {}
+
   chokidar@5.0.0:
     dependencies:
       readdirp: 5.0.0
@@ -2640,6 +2678,10 @@ snapshots:
       gopd: 1.2.0
 
   electron-to-chromium@1.5.376: {}
+
+  element-china-area-data@6.1.0:
+    dependencies:
+      china-division: 2.7.0
 
   element-plus@2.14.2(vue@3.5.38):
     dependencies:

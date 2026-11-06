@@ -1,44 +1,98 @@
-# vue-rabbit
+# 小兔鮮兒（vue3-rabbit）
 
-This template should help get you started developing with Vue 3 in Vite.
+跟著黑馬程序員的 Vue 3 課程做的電商前端，後端 API 由課程提供。這個專案不是從零自己設計的，我在課程基礎上做了二次開發，哪些是課程原本有的、哪些是我自己加的，在下面「我額外做的部分」有分開列。
 
-## Recommended IDE Setup
+**Live Demo：** https://vue3-rabbit-eosin.vercel.app
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+登入使用課程提供的測試帳號：
 
-## Recommended Browser Setup
+- 帳號：`xiaotuxian001`
+- 密碼：`123456`
+- 支付寶帳號：`scobys4865@sandbox.com`
+- 支付寶密碼：`111111`
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
 
-## Customize configuration
+測試帳號是課程共用的，購物車、地址、訂單可能被其他人更動，詳見最後的「已知限制」。
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+![首頁](docs/home.png)
+![商品詳情](docs/detail.png)
+![結帳頁](docs/checkout.png)
 
-## Project Setup
+## 技術
 
-```sh
+| 類別 | 使用 |
+| --- | --- |
+| 框架 | Vue 3（Composition API）、Vite |
+| 路由與狀態 | Vue Router（history 模式、路由懶載入）、Pinia、pinia-plugin-persistedstate |
+| UI | Element Plus（自動引入）、SCSS |
+| 請求 | Axios（封裝攔截器） |
+| 其他 | opencc-js（簡轉繁）、@simoko/tw-zip（台灣縣市與郵遞區號資料） |
+| 部署 | Vercel（push 後自動部署） |
+
+## 功能
+
+- 首頁、分類與子分類（無限滾動、依條件排序）
+- 商品詳情：圖片預覽、SKU 規格選擇、24 小時／週熱榜
+- 購物車：未登入存在本地，登入後和課程後端同步
+- 結算與付款：收貨地址、訂單金額、付款倒數
+- 會員中心：訂單列表、訂單詳情、取消訂單、收貨地址管理
+
+## 我額外做的部分
+
+- **簡體轉繁體：** 課程 API 回傳簡體資料，我在 Axios 響應攔截器用 OpenCC 遞迴轉換，元件不用各自處理。
+- **庫存檢查：** 加入購物車時，比對「購物車已有數量 + 本次數量」是否超過該規格庫存，數量輸入框的上限也跟著規格庫存走。
+- **規格價格：** 詳情頁和購物車使用選中規格的價格，不再顯示商品層級的價格。
+- **骨架屏：** 詳情頁載入時用骨架屏撐住版面，頁尾不會跳動。
+- **收貨地址管理：** 新增、編輯、刪除、設為預設，用 Element Plus 表單驗證與級聯選擇器選台灣縣市和行政區，郵遞區號自動帶入。表單抽成共用元件，結帳頁新增地址後會直接切換到那筆地址。
+- **訂單詳情與取消訂單：** 自己做的詳情頁（狀態進度、收貨資訊、商品與金額），待付款訂單可以選原因取消。
+- **付款倒數：** 重寫倒數計時 composable，載入前顯示佔位、倒數到 0 就停止，離開頁面會清除定時器。
+- **在地化：** 幣別改成 NT$、頁尾社群改成 Facebook / Instagram、客服專線與營業時間調整。
+- **錯誤處理：** 沒有網路或請求逾時時，攔截器不會因為取不到 `e.response` 而報錯，會顯示通用提示。
+
+## 遇到的問題與解法
+
+| 問題 | 原因 | 解法 |
+| --- | --- | --- |
+| 點熱榜商品，網址變了但內容沒換 | 路由參數改變時元件被重複使用，`onMounted` 不會再執行 | 用 `watch` 監聽 `route.params.id` 重新取資料 |
+| 載入時頁尾先往上跳，資料到了再被推下去 | 內容用 `v-if` 隱藏，容器高度塌陷 | 骨架屏撐住版面 |
+| 數量輸入框可以輸入極大的數字，金額爆掉 | `el-input-number` 沒有設上限 | 以規格庫存設 `max`，並檢查購物車已有數量 |
+| 登入與未登入時同一商品價格不同 | 購物車存的是商品價格，登入後後端回傳的是規格價格 | 一律使用 SKU 價格 |
+| 部署後在非首頁重新整理出現 404 | history 模式需要伺服器回傳 `index.html` | `vercel.json` 設定 rewrites |
+| 付款完成被導回 `127.0.0.1` | 回調網址寫死了本機位址 | 改用 `window.location.origin` 組出回調網址 |
+| 付款倒數先顯示 00:00 再跳成 29:59 | 倒數的初始值是 0，秒數要等訂單 API 回來才有 | 初始值改為 `null`，沒資料時顯示佔位文字 |
+| 結帳頁商品比購物車少 | 查 Network 發現部分商品被後端標為 `isEffective: false` | 確認是課程資料本身的問題，在已知限制中說明 |
+| 加入購物車數量異常 | 課程用的是count++，相同商品只有在第一次加入購物車時，數量顯示正常，後續加入只會有一件 | 改成 goods.count 去計算實際的量 |
+| 台灣地址在訂單與地址列表只顯示「台灣省」 | 後端用自己的（大陸）行政區代碼表重新產生完整地址，查不到台灣的縣市與行政區 | 地址代碼本身有保留，由前端用代碼還原縣市與行政區 |
+
+
+## 本地執行
+
+需要 Node.js 與 pnpm。
+
+```bash
+git clone https://github.com/Niklaus1010/vue3Rabbit.git
+cd vue3Rabbit
 pnpm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 pnpm dev
 ```
 
-### Compile and Minify for Production
+建置：
 
-```sh
+```bash
 pnpm build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+## 取捨
 
-```sh
-pnpm lint
-```
+我評估過自己串接 LINE Pay、用 Node 自建後端取代課程 API，但這會讓專案變成重寫後端，也失去了練習「串接現成 API」的意義。我的目標是前端職位，所以決定把時間放在前端的資料流、狀態管理與使用者體驗，沒有做這兩項。
+
+## 已知限制
+
+- API 是課程的測試環境，帳號為多人共用，購物車、地址與訂單可能被其他使用者更動。
+- 部分商品（例如「鑽石陶瓷塗層多用鍋」）在課程後端被標為失效，無法結帳，建議選擇其他商品體驗完整流程。
+- 付款由課程後端的支付寶測試環境處理，實際能否完成付款取決於課程環境。
+- 後端用大陸行政區代碼表處理地址，台灣地址的縣市與行政區由前端還原，目前結帳頁、地址列表與訂單詳情頁有處理，訂單列表還沒有。
+
+## 作者
+
+`（姓名）`｜GitHub：[Niklaus1010](https://github.com/Niklaus1010)

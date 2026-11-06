@@ -1,4 +1,8 @@
 <script setup>
+// 放在 src/views/Checkout/index.vue
+import { getAddressListAPI } from '@/apis/address'
+import AddressDialog from '@/components/AddressDialog.vue'
+import { formatLocation } from '@/utils/taiwanRegion'
 import { getCheckInfoAPI, createOrderAPI } from '@/apis/checkout'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -11,10 +15,9 @@ const curAddress = ref({}) // 默認地址
 const getCheckInfo = async () => {
   const res = await getCheckInfoAPI()
   checkInfo.value = res.result
-  // 配對默認地址
-  // 從地址列表中篩選出來 isDefault === 0 
-  const item = checkInfo.value.userAddresses.find(item => item.isDefault === 0)
-  curAddress.value = item
+  // 配對默認地址，找不到就用第一筆
+  const list = checkInfo.value.userAddresses
+  curAddress.value = list.find(item => item.isDefault === 0) ?? list[0]
 }
 
 onMounted(() => getCheckInfo())
@@ -28,14 +31,39 @@ const switchAddress = (item) => {
   activeAddress.value = item
 }
 
+// 打開切換地址的彈窗，預先選取目前使用的地址
+const openSwitch = () => {
+  activeAddress.value = curAddress.value ?? {}
+  showDialog.value = true
+}
+
 // 用切換完的地址，去蓋掉原本的默認地址
 const confirm = () => {
   curAddress.value = activeAddress.value
   showDialog.value = false
 }
 
+// 新增地址（共用 AddressDialog）
+const showAddressForm = ref(false)
+
+const onAddressSaved = async (id) => {
+  const res = await getAddressListAPI()
+  checkInfo.value.userAddresses = res.result
+  // 直接切換成剛儲存的這筆地址
+  curAddress.value = res.result.find(item => item.id === id) ?? curAddress.value
+  activeAddress.value = curAddress.value
+}
+
 // 創建訂單
 const createOrder = async () => {
+  if (!curAddress.value?.id) {
+    ElMessage.warning('請先選擇收貨地址')
+    return
+  }
+  if (!checkInfo.value.goods?.length) {
+    ElMessage.warning('沒有可結算的商品')
+    return
+  }
   const res = await createOrderAPI({
     deliveryTimeType: 1,
     payType: 1,
@@ -74,12 +102,12 @@ const createOrder = async () => {
               <ul v-else>
                 <li><span>收<i />貨<i />人：</span>{{ curAddress.receiver }}</li>
                 <li><span>聯絡方式：</span>{{ curAddress.contact }}</li>
-                <li><span>收貨地址：</span>{{ curAddress.fullLocation }} {{ curAddress.address }}</li>
+                <li><span>收貨地址：</span>{{ formatLocation(curAddress) }} {{ curAddress.address }}</li>
               </ul>
             </div>
             <div class="action">
-              <el-button size="large" @click="showDialog = true">切換地址</el-button>
-              <el-button size="large" @click="addFlag = true">添加地址</el-button>
+              <el-button size="large" @click="openSwitch">切換地址</el-button>
+              <el-button size="large" @click="showAddressForm = true">添加地址</el-button>
             </div>
           </div>
         </div>
@@ -139,15 +167,15 @@ const createOrder = async () => {
             </dl>
             <dl>
               <dt>商品總價：</dt>
-              <dd>¥{{ checkInfo.summary?.totalPrice.toFixed(2) }}</dd>
+              <dd>NT${{ checkInfo.summary?.totalPrice.toFixed(2) }}</dd>
             </dl>
             <dl>
               <dt>運<i></i>費：</dt>
-              <dd>¥{{ checkInfo.summary?.postFee.toFixed(2) }}</dd>
+              <dd>NT${{ checkInfo.summary?.postFee.toFixed(2) }}</dd>
             </dl>
             <dl>
               <dt>應付總額：</dt>
-              <dd class="price">{{ checkInfo.summary?.totalPayPrice.toFixed(2) }}</dd>
+              <dd class="price">NT${{ checkInfo.summary?.totalPayPrice.toFixed(2) }}</dd>
             </dl>
           </div>
         </div>
@@ -165,18 +193,19 @@ const createOrder = async () => {
         <ul>
         <li><span>收<i />貨<i />人：</span>{{ item.receiver }} </li>
         <li><span>聯絡方式：</span>{{ item.contact }}</li>
-        <li><span>收貨地址：</span>{{ item.fullLocation + item.address }}</li>
+        <li><span>收貨地址：</span>{{ formatLocation(item) }} {{ item.address }}</li>
         </ul>
       </div>
     </div>
     <template #footer>
       <span class="dialog-footer">
-        <el-button>取消</el-button>
+        <el-button @click="showDialog = false">取消</el-button>
         <el-button type="primary" @click="confirm">確定</el-button>
       </span>
     </template>
   </el-dialog>
   <!-- 添加地址 -->
+  <AddressDialog v-model="showAddressForm" @saved="onAddressSaved" />
 </template>
 
 <style scoped lang="scss">

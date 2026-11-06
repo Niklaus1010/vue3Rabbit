@@ -37,7 +37,7 @@ const payUrl = `${baseURL}pay/aliPay?orderId=${route.query.id}&redirect=${redire
         </div>
         <div class="amount">
           <span>應付總額：</span>
-          <span>¥{{ payInfo.payMoney?.toFixed(2) }}</span>
+          <span>NT${{ payInfo.payMoney?.toFixed(2) }}</span>
         </div>
       </div>
       <!-- 付款方式 -->

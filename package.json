@@ -13,9 +13,11 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.3.1",
+    "@simoko/tw-zip": "^1.1.0",
     "@vueuse/core": "^14.3.0",
     "axios": "^1.18.0",
     "dayjs": "^1.11.21",
+    "element-china-area-data": "^6.1.0",
     "element-plus": "^2.14.2",
     "opencc-js": "^1.4.0",
     "pinia": "^3.0.4",
